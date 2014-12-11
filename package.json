@@ -1,0 +1,17 @@
+{
+  "name": "job_scraper",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "~2.4.1",
+    "express": "~4.10.5",
+    "cheerio": "~0.18.0"
+  }
+}
