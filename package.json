@@ -12,6 +12,7 @@
   "dependencies": {
     "lodash": "~2.4.1",
     "express": "~4.10.5",
-    "cheerio": "~0.18.0"
+    "cheerio": "~0.18.0",
+    "q": "~1.1.2"
   }
 }

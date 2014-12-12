@@ -1,0 +1,9 @@
+{
+	"jobs.bg" : {
+		"baseUrl": "www.jobs.bg",
+		"listingPath": "/front_job_search.php",
+		"queryParam": "keyword",
+		"pageParam": "frompage",
+		"linkId": "joblink"
+	}
+}
