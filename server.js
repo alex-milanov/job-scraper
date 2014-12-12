@@ -8,7 +8,7 @@ var app = express();
 
 var listingScraper = require('./listingScraper');
 
-
+console.log(sites['jobs.bg']['fields']['info']['chain']);
 
 app.get('/', function (req, res) {
 

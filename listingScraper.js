@@ -18,6 +18,28 @@ var http_request = function(options){
 	return deferred.promise;
 }
 
+// parsers
+var chainParse = function(chain, el){
+	if(!chain[0]){
+		return el;
+	}
+	var func = chain[0][0];
+	if(chain[0][1]){
+		el = el[func](chain[0][1]);
+	} else {
+		el = el[func]();
+	}
+	chain.shift();
+	return chainParse(chain, el);
+}
+
+var jqueryParse = function(field, $){
+	if(!field.chain[0])
+		return '';
+	else 
+		return chainParse(_.clone(field.chain), $(field.selector));
+}
+
 
 function promiseHttpResponse(conf, query, start){
 	var deferred = Q.defer();
@@ -38,7 +60,6 @@ function promiseHttpResponse(conf, query, start){
 		path: listingPath
 	};
 
-	console.log('pre request',options);
 	return http_request(options);
 }
 
@@ -50,16 +71,12 @@ function promiseResponseData(response){
 	});
 
 	response.on('end', function () {
-
-		console.log('response end');
 		deferred.resolve(str);
 	});
 	return deferred.promise
 }
 
 function promiseResults(conf, data){
-
-	//console.log(conf,data);
 
 	var deferred = Q.defer();
 	var $ = cheerio.load(data);
@@ -71,7 +88,6 @@ function promiseResults(conf, data){
 			title: $(this).html(),
 			link: $(this).attr('href')
 		})
-		console.log($(this).html());
 	})
 
 	deferred.resolve(results);
@@ -79,24 +95,19 @@ function promiseResults(conf, data){
 	return deferred.promise
 }
 
-function promiseJobInfoParsed(conf, result, data){
+function promiseJobFields(fields, result, data){
 
-	console.log(result,data);
 
 	var deferred = Q.defer();
 	var $ = cheerio.load(data);
 
-	result.info = $('td.jobTitleViewBold').eq(1).next('td').text();
-
-	$('td.jobTitleViewBold').each(function(){
-		if($(this).text() == 'Заплата:'){
-			result.salary = $(this).next('td').text();
+	for(var i in fields){
+		if(fields[i].type == 'jquery'){
+			result[i] = jqueryParse(fields[i],$);
 		}
-	})
-
+	}
+	
 	deferred.resolve(result);
-
-	console.log(result);
 
 	return deferred.promise;
 }
@@ -111,13 +122,16 @@ function promiseJobInfo(conf, results){
 			path: '/'+results[i].link
 		};
 		var result = results[i];
-		resultPromises.push(function(conf, result){
-			return http_request(options)
-				.then(promiseResponseData)
-				.then(function(data){
-					return promiseJobInfoParsed(conf, result, data);
-				})
-		}(conf, result));
+		var fields = conf.fields;
+		resultPromises.push(http_request(options)
+			.then(promiseResponseData)
+			.then(
+				function(result){
+					return function(data){
+						return promiseJobFields(fields, result, data);
+					};
+				}(result)
+			));
 	}
 
 	return Q.all(resultPromises);

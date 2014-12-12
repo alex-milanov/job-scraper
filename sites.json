@@ -4,6 +4,25 @@
 		"listingPath": "/front_job_search.php",
 		"queryParam": "keyword",
 		"pageParam": "frompage",
-		"linkId": "joblink"
+		"linkId": "joblink",
+		"fields": {
+			"info": {
+				"type": "jquery",
+				"selector": "td.jobTitleViewBold",
+				"chain": [
+					["eq",1],
+					["next","td"],
+					["text"]
+				]
+			},
+			"salary": {
+				"type": "jquery",
+				"selector": "td.jobTitleViewBold:contains('Заплата')",
+				"chain": [
+					["next","td"],
+					["text"]
+				]
+			}
+		}
 	}
 }
