@@ -11,8 +11,15 @@ var Q = require('q');
 var http_request = function(options){
 	var deferred = Q.defer();
 
-	http.request(options, function(response, error){
-		deferred.resolve(response);
+	http.request(options, function(response){
+		var str = ''
+		response.on('data', function (chunk) {
+			str += chunk;
+		});
+
+		response.on('end', function () {
+			deferred.resolve(str);
+		});
 	}).end();
 
 	return deferred.promise;
@@ -63,19 +70,6 @@ function promiseHttpResponse(conf, query, start){
 	return http_request(options);
 }
 
-function promiseResponseData(response){
-	var deferred = Q.defer();
-	var str = ''
-	response.on('data', function (chunk) {
-		str += chunk;
-	});
-
-	response.on('end', function () {
-		deferred.resolve(str);
-	});
-	return deferred.promise
-}
-
 function promiseResults(conf, data){
 
 	var deferred = Q.defer();
@@ -106,7 +100,7 @@ function promiseJobFields(fields, result, data){
 			result[i] = jqueryParse(fields[i],$);
 		}
 	}
-	
+
 	deferred.resolve(result);
 
 	return deferred.promise;
@@ -124,14 +118,11 @@ function promiseJobInfo(conf, results){
 		var result = results[i];
 		var fields = conf.fields;
 		resultPromises.push(http_request(options)
-			.then(promiseResponseData)
-			.then(
-				function(result){
-					return function(data){
-						return promiseJobFields(fields, result, data);
-					};
-				}(result)
-			));
+			.then(function(result){
+				return function(data){
+					return promiseJobFields(fields, result, data);
+				};
+			}(result)));
 	}
 
 	return Q.all(resultPromises);
@@ -140,7 +131,6 @@ function promiseJobInfo(conf, results){
 var promiseListing = function(conf, query, start){
 
 	return promiseHttpResponse(conf, query, start)
-		.then(promiseResponseData)
 		.then(function(data){
 			return promiseResults(conf, data);
 		})
