@@ -4,7 +4,13 @@
 		"listingPath": "/front_job_search.php",
 		"queryParam": "keyword",
 		"pageParam": "frompage",
-		"linkId": "joblink",
+		"incStart": 0,
+		"incStep": 15,
+		"list": {
+			"selector": "a.joblink",
+			"title": [["text"]],
+			"link": [["attr", "href"]]
+		},
 		"fields": {
 			"info": {
 				"type": "jquery",
@@ -20,6 +26,28 @@
 				"selector": "td.jobTitleViewBold:contains('Заплата')",
 				"chain": [
 					["next","td"],
+					["text"]
+				]
+			}
+		}
+	},
+	"jobtiger.bg" : {
+		"baseUrl": "www.jobtiger.bg",
+		"listingPath": "/obiavi-za-rabota/",
+		"queryParam": "keyword",
+		"pageParam": "_page",
+		"incStart": 1,
+		"incStep": 1,
+		"list": {
+			"selector": "div#JobsListContainer > ul > li > a",
+			"title": [["find","div.Title"],["text"]],
+			"link": [["attr", "href"]]
+		},
+		"fields": {
+			"info": {
+				"type": "jquery",
+				"selector": ".JobContent .Description",
+				"chain": [
 					["text"]
 				]
 			}

@@ -29,9 +29,12 @@ var iterateUntilEmpty = function(index, step, promiseResource){
 app.get('/', function (req, res) {
 
 	var query = req.query.q || '';
+	var site = req.query.site || 'jobs.bg';
 
-	iterateUntilEmpty(0,15,function(start){
-		return listingScraper.promiseListing(sites['jobs.bg'],query,start)
+	var siteConf = sites[site];
+
+	iterateUntilEmpty(siteConf.incStart,siteConf.incStep,function(start){
+		return listingScraper.promiseListing(siteConf,query,start)
 	}).then(function(listing){
 		res.jsonp({
 			total: listing.length,

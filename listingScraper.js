@@ -48,7 +48,7 @@ var jqueryParse = function(field, $){
 }
 
 
-function promiseHttpResponse(conf, query, start){
+function promiseJobsListHTML(conf, query, start){
 	var deferred = Q.defer();
 
 	var listingPath = conf.listingPath;
@@ -70,26 +70,36 @@ function promiseHttpResponse(conf, query, start){
 	return http_request(options);
 }
 
-function promiseResults(conf, data){
+function promiseJobsList(conf, jobsListHTML){
 
 	var deferred = Q.defer();
-	var $ = cheerio.load(data);
+	var $ = cheerio.load(jobsListHTML);
 
-	var results = [];
+	var jobsList = [];
 
+	if(conf.list){
+		$(conf.list.selector).each(function(){
+			jobsList.push({
+				title: chainParse(_.clone(conf.list.title),$(this)),
+				link: chainParse(_.clone(conf.list.link),$(this))
+			});
+		});
+	}
+	/*
 	$("a."+conf.linkId).each(function(){
-		results.push({
+		jobsList.push({
 			title: $(this).html(),
 			link: $(this).attr('href')
 		})
 	})
+*/
 
-	deferred.resolve(results);
+	deferred.resolve(jobsList);
 
 	return deferred.promise
 }
 
-function promiseJobFields(fields, result, data){
+function promiseJobFields(fields, job, data){
 
 
 	var deferred = Q.defer();
@@ -97,45 +107,51 @@ function promiseJobFields(fields, result, data){
 
 	for(var i in fields){
 		if(fields[i].type == 'jquery'){
-			result[i] = jqueryParse(fields[i],$);
+			job[i] = jqueryParse(fields[i],$);
 		}
 	}
 
-	deferred.resolve(result);
+	deferred.resolve(job);
 
 	return deferred.promise;
 }
 
-function promiseJobInfo(conf, results){
+function promiseJobInfo(conf, jobsList){
 
-	var resultPromises = [];
+	var jobInfoPromises = [];
 
-	for(var i in results){
+	for(var i in jobsList){
+
+		var jobLink = jobsList[i].link;
+		// todo: do it with regexp
+		jobLink = jobLink.replace('http://','');
+		jobLink = jobLink.replace(conf.baseUrl+'/','');
+
 		var options = {
 			host: conf.baseUrl,
-			path: '/'+results[i].link
+			path: '/'+jobLink
 		};
-		var result = results[i];
+		var job = jobsList[i];
 		var fields = conf.fields;
-		resultPromises.push(http_request(options)
-			.then(function(result){
+		jobInfoPromises.push(http_request(options)
+			.then(function(job){
 				return function(data){
-					return promiseJobFields(fields, result, data);
+					return promiseJobFields(fields, job, data);
 				};
-			}(result)));
+			}(job)));
 	}
 
-	return Q.all(resultPromises);
+	return Q.all(jobInfoPromises);
 }
 
 var promiseListing = function(conf, query, start){
 
-	return promiseHttpResponse(conf, query, start)
+	return promiseJobsListHTML(conf, query, start)
 		.then(function(data){
-			return promiseResults(conf, data);
+			return promiseJobsList(conf, data);
 		})
-		.then(function(results){
-			return promiseJobInfo(conf, results);
+		.then(function(jobsList){
+			return promiseJobInfo(conf, jobsList);
 		})
 }
 
