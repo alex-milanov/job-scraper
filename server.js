@@ -1,55 +1,26 @@
 
-var express = require('express');
-var _ = require('lodash');
-var Q = require('q');
+/**
+ * First we set the node enviornment variable if not set before
+ */
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 
-var sites = require('./sites.json');
 
-var app = express();
+/**
+ * Main application entry file.
+ * Please note that the order of loading is important.
+ */
 
-var listingScraper = require('./listingScraper');
+// Init the express application
+var app = require('./config/express')();
 
-var iterateUntilEmpty = function(index, step, promiseResource){
-	return promiseResource(index).then(function(resource){
-		console.log(index,step,(resource));
-		if(resource.length == 0){
-			return [];
-		} else {
-			return iterateUntilEmpty((index+step), step, promiseResource).then(function(nextResource){
+// Start the app by listening on <port>
+app.listen(3000);
+//app.listen(config.port);
 
-				var newResource = resource.concat(nextResource);
-				console.log('merge',resource.length, nextResource.length, newResource.length)
-				return newResource;
-			})
-		}
-	});
-}
+// Expose app
+exports = module.exports = app;
 
-app.get('/', function (req, res) {
-
-	var query = req.query.q || '';
-	var site = req.query.site || 'jobs.bg';
-
-	var siteConf = sites[site];
-
-	iterateUntilEmpty(siteConf.incStart,siteConf.incStep,function(start){
-		return listingScraper.promiseListing(siteConf,query,start)
-	}).then(function(listing){
-		res.jsonp({
-			total: listing.length,
-			listing: listing
-		});
-	},function(error){
-		res.jsonp({error:error});
-	})
-})
-
-var server = app.listen(3000, function () {
-
-  var host = server.address().address;
-  var port = server.address().port;
-
-  console.log('Example app listening at http://%s:%s', host, port);
-
-})
+// Logging initialization
+console.log('Express app started on port ' + 3000);
+//console.log('Express app started on port ' + config.port);

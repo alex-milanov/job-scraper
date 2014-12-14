@@ -1,0 +1,14 @@
+
+extends layout
+
+block content
+
+	.row: .col-xs-12: form#jobQuery(role='form')
+		label Enter Keywords
+		input.form-control(type='text',name='q')
+	.row: .col-xs-12: ul#jobsListing
+		li.jobBody
+			a.jobLink(href='') Job Link
+			.jobInfo
+
+	
