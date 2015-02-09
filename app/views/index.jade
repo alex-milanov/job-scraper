@@ -8,7 +8,11 @@ block content
 			label Enter Keywords: &nbsp;
 			input.form-control(type='text',name='q')
 			| &nbsp;
+			select.form-control(name='site')
+				option(value='jobs.bg',selected='selected') Jobs.bg
+				option(value='jobtiger.bg') JobTiger.bg
 			button.btn.btn-primary(type='submit') Search 
+	hr
 	.row: .col-xs-12: ul#jobsListing.list-group
 
 	
