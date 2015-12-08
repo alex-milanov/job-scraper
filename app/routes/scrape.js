@@ -9,7 +9,7 @@
 
 		app.get('/scrape', function (req, res) {
 			
-			var query = req.query.q || '';
+			var searchQuery = req.query.q || '';
 			var site = req.query.site || 'jobs.bg';
 
 			var siteConf = sitesConf[site];
@@ -17,9 +17,9 @@
 			var step = siteConf.incStep || 15;
 
 			// promise job listing, page by page
-			var iteratedPromise = function(index){
-				console.log(index);
-				return listingScraper.promiseListing(siteConf,query,index);
+			var iteratedPromise = function(pageIndex){
+				//console.log(pageIndex);
+				return listingScraper.promiseListing(siteConf,searchQuery,pageIndex);
 			}
 
 			var handleSuccess = function(listing){

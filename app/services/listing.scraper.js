@@ -2,6 +2,7 @@
 
 var http = require('http');
 
+// cheerio for jquery style html page parsing
 var cheerio = require('cheerio');
 
 var _ = require('lodash');
@@ -123,14 +124,25 @@ function promiseJobInfo(conf, jobsList){
 	for(var i in jobsList){
 
 		var jobLink = jobsList[i].link;
-		// todo: do it with regexp
-		jobLink = jobLink.replace('http://','');
-		jobLink = jobLink.replace(conf.baseUrl+'/','');
+
+		// case 1 - http(s)://site-base-url/job/link
+		// case 2 - http(s)://another-site/job/link
+		// case 3 - no http - /job/link or job/link
+		var matches = jobLink.split(/^((https?\:\/\/)([a-z\.]+))?\/?([a-z0-9\/\.\-\_]+(\.html?)?)/gi);
+		var baseUrl = (typeof matches[1] !== "undefined") ? matches[3] : conf.baseUrl;
+		baseUrl = baseUrl.replace('www.','');
+		var protocol = (typeof matches[2] !== "undefined") ? matches[2] : "http://";
+		jobLink = matches[4];
 
 		var options = {
-			host: conf.baseUrl,
+			host: 'www.'+baseUrl,
 			path: '/'+jobLink
 		};
+
+		jobsList[i].link = protocol+baseUrl+'/'+jobLink;
+
+		//console.log(options,jobsList[i].link);
+		
 		var job = jobsList[i];
 		var fields = conf.fields;
 		jobInfoPromises.push(http_request(options)
