@@ -32,9 +32,12 @@
 			var handleError = function(error){
 				res.jsonp({error:error});
 			}
-
-			// iteratively scrape, modify and concat the job listings
-			promiseUtil.iterateUntilEmpty(start,step,iteratedPromise).then(handleSuccess,handleError)
+			if(siteConf.pageParam === false){
+				listingScraper.promiseListing(siteConf,searchQuery,0).then(handleSuccess,handleError);
+			} else {
+				// iteratively scrape, modify and concat the job listings
+				promiseUtil.iterateUntilEmpty(start,step,iteratedPromise).then(handleSuccess,handleError)
+			}
 		})
 
 

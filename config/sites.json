@@ -1,6 +1,7 @@
 {
 	"jobs.bg" : {
 		"baseUrl": "www.jobs.bg",
+		"protocol": "http",
 		"listingPath": "/front_job_search.php",
 		"queryParam": "keyword",
 		"pageParam": "frompage",
@@ -33,6 +34,7 @@
 	},
 	"jobtiger.bg" : {
 		"baseUrl": "www.jobtiger.bg",
+		"protocol": "http",
 		"listingPath": "/obiavi-za-rabota/",
 		"queryParam": "keyword",
 		"pageParam": "_page",
@@ -47,6 +49,27 @@
 			"info": {
 				"type": "jquery",
 				"selector": ".JobContent .Description",
+				"chain": [
+					["text"]
+				]
+			}
+		}
+	},
+	"weworkremotely.com" : {
+		"baseUrl": "weworkremotely.com",
+		"protocol": "https",
+		"listingPath": "/jobs/search",
+		"queryParam": "term",
+		"pageParam": false,
+		"list": {
+			"selector": "section.jobs > article > ul > li > a:not(.view-all)",
+			"title": [["text"]],
+			"link": [["attr", "href"]]
+		},
+		"fields": {
+			"info": {
+				"type": "jquery",
+				"selector": "section.job > .listing-container",
 				"chain": [
 					["text"]
 				]

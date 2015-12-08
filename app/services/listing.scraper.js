@@ -1,6 +1,6 @@
 'use strict'
 
-var http = require('http');
+var request = require('request');
 
 // cheerio for jquery style html page parsing
 var cheerio = require('cheerio');
@@ -9,19 +9,16 @@ var _ = require('lodash');
 var Q = require('q');
 
 // denodified functions
-var http_request = function(options){
+var promiseRequest = function(url){
 	var deferred = Q.defer();
 
-	http.request(options, function(response){
-		var str = ''
-		response.on('data', function (chunk) {
-			str += chunk;
-		});
-
-		response.on('end', function () {
-			deferred.resolve(str);
-		});
-	}).end();
+	request(url, function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			deferred.resolve(body);
+		} else {
+			deferred.reject(error,response);
+		}
+	});
 
 	return deferred.promise;
 }
@@ -55,7 +52,7 @@ function promiseJobsListHTML(conf, query, start){
 	var listingPath = conf.listingPath;
 	if(query){
 		listingPath += '?'+conf.queryParam+'='+query;
-		if(start){
+		if(conf.pageParam && start){
 			listingPath += '&'+conf.pageParam+'='+start;
 		}
 	} else {
@@ -65,10 +62,15 @@ function promiseJobsListHTML(conf, query, start){
 
 	var options = {
 		host: conf.baseUrl,
+		protocol: conf.protocol,
 		path: listingPath
 	};
 
-	return http_request(options);
+	var url = conf.protocol + "://" + conf.baseUrl + listingPath;
+
+	//console.log(url);
+
+	return promiseRequest(url);
 }
 
 function promiseJobsList(conf, jobsListHTML){
@@ -128,24 +130,17 @@ function promiseJobInfo(conf, jobsList){
 		// case 1 - http(s)://site-base-url/job/link
 		// case 2 - http(s)://another-site/job/link
 		// case 3 - no http - /job/link or job/link
-		var matches = jobLink.split(/^((https?\:\/\/)([a-z\.]+))?\/?([a-z0-9\/\.\-\_]+(\.html?)?)/gi);
+		var matches = jobLink.split(/^((https?)\:\/\/([a-z\.]+))?\/?([a-z0-9\/\.\-\_]+(\.html?)?)/gi);
 		var baseUrl = (typeof matches[1] !== "undefined") ? matches[3] : conf.baseUrl;
-		baseUrl = baseUrl.replace('www.','');
-		var protocol = (typeof matches[2] !== "undefined") ? matches[2] : "http://";
+		//baseUrl = baseUrl.replace('www.','');
+		var protocol = (typeof matches[2] !== "undefined") ? matches[2] : conf.protocol;
 		jobLink = matches[4];
 
-		var options = {
-			host: 'www.'+baseUrl,
-			path: '/'+jobLink
-		};
+		var url = jobsList[i].link = protocol+'://'+baseUrl+'/'+jobLink;
 
-		jobsList[i].link = protocol+baseUrl+'/'+jobLink;
-
-		//console.log(options,jobsList[i].link);
-		
 		var job = jobsList[i];
 		var fields = conf.fields;
-		jobInfoPromises.push(http_request(options)
+		jobInfoPromises.push(promiseRequest(url)
 			.then(function(job){
 				return function(data){
 					return promiseJobFields(fields, job, data);
