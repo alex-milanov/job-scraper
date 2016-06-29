@@ -3,15 +3,10 @@
 ## Setup
 
 ```sh
-npm install
-bower install
+npm i
 ```
 
 ## Running
 ```sh
-nodemon
-```
-or
-```sh
-node server.js
+npm start
 ```

@@ -6,11 +6,11 @@ var request = require('request');
 var cheerio = require('cheerio');
 
 var _ = require('lodash');
-var Q = require('q');
+var Promise = require('bluebird');
 
 // denodified functions
 var promiseRequest = function(url){
-	var deferred = Q.defer();
+	var deferred = Promise.defer();
 
 	request(url, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
@@ -41,13 +41,13 @@ var chainParse = function(chain, el){
 var jqueryParse = function(field, $){
 	if(!field.chain[0])
 		return '';
-	else 
+	else
 		return chainParse(_.clone(field.chain), $(field.selector));
 }
 
 
 function promiseJobsListHTML(conf, query, start){
-	var deferred = Q.defer();
+	var deferred = Promise.defer();
 
 	var listingPath = conf.listingPath;
 	if(query){
@@ -75,7 +75,7 @@ function promiseJobsListHTML(conf, query, start){
 
 function promiseJobsList(conf, jobsListHTML){
 
-	var deferred = Q.defer();
+	var deferred = Promise.defer();
 	var $ = cheerio.load(jobsListHTML);
 
 	var jobsList = [];
@@ -105,7 +105,7 @@ function promiseJobsList(conf, jobsListHTML){
 function promiseJobFields(fields, job, data){
 
 
-	var deferred = Q.defer();
+	var deferred = Promise.defer();
 	var $ = cheerio.load(data);
 
 	for(var i in fields){
@@ -148,7 +148,7 @@ function promiseJobInfo(conf, jobsList){
 			}(job)));
 	}
 
-	return Q.all(jobInfoPromises);
+	return Promise.all(jobInfoPromises);
 }
 
 var promiseListing = function(conf, query, start){

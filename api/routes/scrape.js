@@ -2,13 +2,13 @@
 
 	var listingScraper = require('../services/listing.scraper');
 	var promiseUtil = require('../services/promise.util');
-	var sitesConf = require('../../config/sites.json');
+	var sitesConf = require('../config/sites.json');
 
 
 	module.exports = function(app){
 
-		app.get('/scrape', function (req, res) {
-			
+		app.get('/api/scrape', function (req, res) {
+
 			var searchQuery = req.query.q || '';
 			var site = req.query.site || 'jobs.bg';
 

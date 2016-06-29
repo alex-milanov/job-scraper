@@ -1,20 +1,21 @@
 'use strict'
 
-var functionFromStr = function(functionName){
+import jQuery from 'jquery';
+
+const functionFromStr = functionName => {
 	if (window[functionName] && typeof window[functionName] == "function") {
 		return window[functionName];
 	} else {
 		return false;
 	}
-}
+};
 
-
-$(document).ready(function(){
-	$('a[method]').click(function(event){
-		var method = $(this).attr('method');
-		var url = $(this).attr('href');
-		var success = $(this).attr('success') || window.location.href;
-		$.ajax({
+const resitifyLinks = container => {
+	jQuery(container).on('click', 'a[method]', function(event){
+		var method = jQuery(this).attr('method');
+		var url = jQuery(this).attr('href');
+		var success = jQuery(this).attr('success') || window.location.href;
+		jQuery.ajax({
 			url: url,
 			type: method.toUpperCase(),
 			success: function(result) {
@@ -27,10 +28,12 @@ $(document).ready(function(){
 		});
 		event.preventDefault();
 	})
+};
 
-	$('form.restify').submit(function(event){
-		var map = $.map($(this).serializeArray(),function(v) { var n = {}; n[v.name] = v.value; return n;});
-		
+const resitifyForm = container => {
+	jQuery(container).submit(function(event){
+		var map = jQuery.map(jQuery(this).serializeArray(),function(v) { var n = {}; n[v.name] = v.value; return n;});
+
 		var data = {};
 
 		map.forEach(function(formEl){
@@ -38,11 +41,11 @@ $(document).ready(function(){
 				data[key] = formEl[key];
 			}
 		});
-		var success = $(this).attr('success').split(',');
-		var method = $(this).attr('method');
-		var url = $(this).attr('action');
+		var success = jQuery(this).attr('success').split(',');
+		var method = jQuery(this).attr('method');
+		var url = jQuery(this).attr('action');
 		console.log([url,method,data]);
-		$.ajax({
+		jQuery.ajax({
 			url: url,
 			type: method.toUpperCase(),
 			data: data,
@@ -62,5 +65,11 @@ $(document).ready(function(){
 			}
 		});
 		event.preventDefault();
-	})
-})
+	});
+};
+
+export default {
+	functionFromStr,
+	resitifyLinks,
+	resitifyForm
+};
