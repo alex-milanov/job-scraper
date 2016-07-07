@@ -8,8 +8,6 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 
-var consolidate = require('consolidate');
-
 var app = express();
 
 var appRoot = __dirname + '/..';

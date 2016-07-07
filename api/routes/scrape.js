@@ -4,7 +4,6 @@
 	var promiseUtil = require('../services/promise.util');
 	var sitesConf = require('../config/sites.json');
 
-
 	module.exports = function(app){
 
 		app.get('/api/scrape', function (req, res) {
@@ -19,7 +18,7 @@
 			// promise job listing, page by page
 			var iteratedPromise = function(pageIndex){
 				//console.log(pageIndex);
-				return listingScraper.promiseListing(siteConf,searchQuery,pageIndex);
+				return listingScraper.getListing(siteConf,searchQuery,pageIndex).toPromise();
 			}
 
 			var handleSuccess = function(listing){
@@ -33,12 +32,11 @@
 				res.jsonp({error:error});
 			}
 			if(siteConf.pageParam === false){
-				listingScraper.promiseListing(siteConf,searchQuery,0).then(handleSuccess,handleError);
+				listingScraper.getListing(siteConf, searchQuery,0).toPromise().then(handleSuccess,handleError);
 			} else {
 				// iteratively scrape, modify and concat the job listings
 				promiseUtil.iterateUntilEmpty(start,step,iteratedPromise).then(handleSuccess,handleError)
 			}
 		})
-
 
 	}
