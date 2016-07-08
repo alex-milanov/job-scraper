@@ -4,8 +4,16 @@
 	var promiseUtil = require('../services/promise.util');
 	var sitesConf = require('../config/sites.json');
 
-	module.exports = function(app){
+	const handleSuccess = (req, res) => listing =>
+		res.jsonp({
+			total: listing.length,
+			listing: listing
+		});
 
+	const handleError = (req, res) => error =>
+		res.jsonp({error:error});
+
+	module.exports = function(app){
 		app.get('/api/scrape', function (req, res) {
 
 			var searchQuery = req.query.q || '';
@@ -16,26 +24,17 @@
 			var step = siteConf.incStep || 15;
 
 			// promise job listing, page by page
-			var iteratedPromise = function(pageIndex){
-				//console.log(pageIndex);
-				return listingScraper.getListing(siteConf,searchQuery,pageIndex).toPromise();
-			}
+			const iteratedPromise = pageIndex =>
+				listingScraper.getListing(siteConf, searchQuery, pageIndex)
+					.toPromise();
 
-			var handleSuccess = function(listing){
-				res.jsonp({
-					total: listing.length,
-					listing: listing
-				});
-			}
-
-			var handleError = function(error){
-				res.jsonp({error:error});
-			}
 			if(siteConf.pageParam === false){
-				listingScraper.getListing(siteConf, searchQuery,0).toPromise().then(handleSuccess,handleError);
+				listingScraper.getListing(siteConf, searchQuery, 0).toPromise()
+					.then(handleSuccess(req, res), handleError(req, res));
 			} else {
 				// iteratively scrape, modify and concat the job listings
-				promiseUtil.iterateUntilEmpty(start,step,iteratedPromise).then(handleSuccess,handleError)
+				promiseUtil.iterateUntilEmpty(start,step,iteratedPromise)
+					.then(handleSuccess(req, res), handleError(req, res))
 			}
 		})
 
