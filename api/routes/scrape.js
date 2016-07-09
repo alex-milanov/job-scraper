@@ -1,7 +1,7 @@
 	'use strict'
 
 	var listingScraper = require('../services/listing.scraper');
-	var promiseUtil = require('../services/promise.util');
+	var util = require('../util');
 	var sitesConf = require('../config/sites.json');
 
 	const handleSuccess = (req, res) => listing =>
@@ -23,18 +23,23 @@
 			var start = siteConf.incStart || 0;
 			var step = siteConf.incStep || 15;
 
-			// promise job listing, page by page
-			const iteratedPromise = pageIndex =>
+			// iterate job listing, page by page
+			const getIterated$ = pageIndex =>
 				listingScraper.getListing(siteConf, searchQuery, pageIndex)
-					.toPromise();
 
 			if(siteConf.pageParam === false){
-				listingScraper.getListing(siteConf, searchQuery, 0).toPromise()
-					.then(handleSuccess(req, res), handleError(req, res));
+				listingScraper.getListing(siteConf, searchQuery, 0)
+					.subscribe(
+						handleSuccess(req, res),
+						handleError(req, res)
+					);
 			} else {
 				// iteratively scrape, modify and concat the job listings
-				promiseUtil.iterateUntilEmpty(start,step,iteratedPromise)
-					.then(handleSuccess(req, res), handleError(req, res))
+				util.rx.iterateUntilEmpty(start, step, getIterated$)
+					.subscribe(
+						handleSuccess(req, res),
+						handleError(req, res)
+					);
 			}
 		})
 
