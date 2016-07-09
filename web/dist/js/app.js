@@ -10065,51 +10065,84 @@ window.showJobs = _scraper2.default.showJobs;
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-     value: true
+  value: true
 });
 
-var _jquery = require('jquery');
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-var _jquery2 = _interopRequireDefault(_jquery);
+var removeChildren = function removeChildren(parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+};
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var htmlTags = ["div", "span", "p", "ul", "li", "a", "img", "table", "tbody", "tr", "td", "thead", "th", "tfoot", "form", "input", "select", "button", "textarea", "label", "header", "section", "canvas"];
+
+var select = function select(selector) {
+  return (typeof selector === "undefined" ? "undefined" : _typeof(selector)) === 'object' ? selector instanceof HTMLElement ? selector : null : typeof selector === 'string' ? htmlTags.indexOf(selector) > -1 ? document.createElement(selector) : document.querySelector(selector) || null : null;
+};
 
 var showJobs = function showJobs(result) {
-     var jobsListing = (0, _jquery2.default)('ul#jobsListing');
-     if (result.total > 0) {
-          jobsListing.html('');
-          result.listing.forEach(function (jobData) {
-               var jobLi = (0, _jquery2.default)('<li></li>').addClass('jobBody list-group-item');
-               var toggleInfo = (0, _jquery2.default)('<button class="btn btn-default btn-xs pull-right"><i class="fa fa-info">&nbsp; More Info</i></button>');
+  var jobsListing = select('ul#jobsListing');
+  if (result.total > 0) {
+    jobsListing.opacity = 0;
+    removeChildren(jobsListing);
+    result.listing.forEach(function (jobData) {
+      var jobLi = select('li');
+      jobsListing.appendChild(jobLi);
+      jobLi.classList.add('jobBody', 'list-group-item');
 
-               if (jobData.info) {
-                    jobLi.append(toggleInfo);
-               }
+      var toggleInfo = select('button');
+      toggleInfo.classList.add('btn', 'btn-default', 'btn-xs', 'pull-right', 'fa', 'fa-info');
+      toggleInfo.textContent = 'More Info';
 
-               jobLi.append((0, _jquery2.default)('<a class="jobLink list-group-item-heading" target="_blank"></a>').attr('href', jobData.link).text(jobData.title));
+      if (jobData.info) {
+        jobLi.appendChild(toggleInfo);
+      }
 
-               if (jobData.salary && jobData.salary != '') {
-                    jobLi.append((0, _jquery2.default)('<div class="jobSalary"></div>').html('salary:' + jobData.salary));
-               }
+      var jobLink = select('a');
+      jobLink.classList.add('jobLink', 'list-group-item-heading');
+      jobLink.setAttribute('target', '_blank');
+      jobLink.setAttribute('href', jobData.link);
+      jobLink.textContent = jobData.title;
 
-               if (jobData.info) {
-                    var jobInfo = (0, _jquery2.default)('<div class="jobInfo list-group-item-text"></div>').html(jobData.info).hide();
-                    toggleInfo.click(function () {
-                         jobInfo.slideToggle();
-                    });
-                    jobLi.append(jobInfo);
-               }
+      jobLi.appendChild(jobLink);
 
-               jobLi.appendTo(jobsListing);
-          });
-     }
+      if (jobData.salary && jobData.salary != '') {
+        var jobSalary = select('div');
+        jobSalary.classList.add('jobSalary');
+        jobSalary.textContent = 'salary:' + jobData.salary;
+        jobLi.appendChild(jobSalary);
+      }
+
+      if (jobData.info) {
+        var jobInfo = select('div');
+        jobLi.appendChild(jobInfo);
+        jobInfo.classList.add('jobInfo', 'list-group-item-text');
+        jobInfo.textContent = jobData.info;
+        var jobInfoHeight = jobInfo.offsetHeight;
+        jobInfo.style.height = 0;
+        toggleInfo.addEventListener('click', function (ev) {
+          // console.log(
+          //   jobLink.textContent,
+          //   jobInfoHeight,
+          //   jobInfo.style.height,
+          //   (jobInfo.style.height == '0px'),
+          //   (jobInfo.style.height == jobInfoHeight+'px')
+          // );
+          if (jobInfo.style.height == '0px') jobInfo.style.height = jobInfoHeight + 'px';else if (jobInfo.style.height == jobInfoHeight + 'px') jobInfo.style.height = 0;else return false;
+        });
+      }
+    });
+    jobsListing.opacity = 1;
+  }
 };
 
 exports.default = {
-     showJobs: showJobs
+  showJobs: showJobs
 };
 
-},{"jquery":1}],4:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
