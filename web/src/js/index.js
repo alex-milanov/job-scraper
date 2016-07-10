@@ -1,12 +1,8 @@
 
-import scraper from './util/scraper';
-import simpleRest from './util/simple-rest';
-
-import jQuery from 'jquery';
+import scraper from './services/scraper';
+import domRestify from './util/dom-restify';
 
 window.showJobs = scraper.showJobs;
 
-jQuery(document).ready(function(){
-  simpleRest.resitifyForm('form.restify');
-  simpleRest.resitifyLinks('#jobsListing');
-});
+domRestify.form('form.restify');
+domRestify.links('#jobs-listing');

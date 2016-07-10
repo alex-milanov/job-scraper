@@ -5,6 +5,7 @@
  */
 /* FONT PATH
  * -------------------------- */
+@import url(http://fonts.googleapis.com/css?family=Play:400,700&subset=latin,cyrillic-ext,cyrillic);
 @font-face {
   font-family: 'FontAwesome';
   src: url("../fonts/fontawesome-webfont.eot?v=4.6.3");
@@ -2190,6 +2191,38 @@
   overflow: visible;
   clip: auto; }
 
-.jobInfo {
-  overflow: hidden;
-  transition: height 1s; }
+body {
+  font-family: 'Play'; }
+
+header {
+  margin: 0px;
+  padding: 0px;
+  display: inline-block;
+  height: 50px;
+  line-height: 50px;
+  width: 100%; }
+  header > * {
+    margin: 0px;
+    padding: 0px;
+    display: inline-block;
+    height: 50px;
+    line-height: 50px; }
+  header h1 {
+    font-size: 20px;
+    margin-right: 20px; }
+
+#jobs-listing {
+  margin: 0px;
+  padding: 0px; }
+  #jobs-listing li.job-body {
+    margin: 0px;
+    padding: 0px;
+    margin: 10px 0px;
+    list-style-type: none; }
+    #jobs-listing li.job-body button {
+      float: right; }
+    #jobs-listing li.job-body .job-info {
+      margin-top: 10px;
+      clear: both;
+      overflow: hidden;
+      transition: height 1s; }

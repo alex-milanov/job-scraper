@@ -1,17 +1,21 @@
-
-extends layout
-
-block content
-
-	.row: .col-xs-12
-		form.restify.form-inline(role='form',method='GET',action='/api/scrape',success='callback,showJobs')
-			label Enter Keywords: &nbsp;
-			input.form-control(type='text',name='q')
-			| &nbsp;
-			select.form-control(name='site')
-				option(value='jobs.bg',selected='selected') Jobs.bg
-				option(value='jobtiger.bg') JobTiger.bg
-				option(value='weworkremotely.com') WeWorkRemotely.com
-			button.btn.btn-primary(type='submit') Search
-	hr
-	.row: .col-xs-12: ul#jobsListing.list-group
+doctype html
+html(lang='en')
+	head
+		meta(charset='UTF-8')
+		title Job Scraper
+		link(rel='stylesheet', href='css/style.css')
+	body
+		header
+			h1 Job Scraper
+			form.restify(method='GET',action='/api/scrape',success='callback,showJobs')
+				label Enter Keywords:
+				input(type='text',name='q')
+				select.form-control(name='site')
+					option(value='jobs.bg',selected='selected') Jobs.bg
+					option(value='jobtiger.bg') JobTiger.bg
+					option(value='weworkremotely.com') WeWorkRemotely.com
+				button(type='submit') Search
+		section#content
+			ul#jobs-listing
+		//- load the app
+		script(src="js/app.js")
