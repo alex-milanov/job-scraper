@@ -1,4 +1,4 @@
-	'use strict'
+	'use strict';
 
 	var listingScraper = require('../services/listing.scraper');
 	var util = require('../util');
@@ -11,11 +11,10 @@
 		});
 
 	const handleError = (req, res) => error =>
-		res.jsonp({error:error});
+		res.jsonp({error});
 
-	module.exports = function(app){
-		app.get('/api/scrape', function (req, res) {
-
+	module.exports = function(app) {
+		app.get('/api/scrape', function(req, res) {
 			var searchQuery = req.query.q || '';
 			var site = req.query.site || 'jobs.bg';
 
@@ -25,9 +24,9 @@
 
 			// iterate job listing, page by page
 			const getIterated$ = pageIndex =>
-				listingScraper.getListing(siteConf, searchQuery, pageIndex)
+				listingScraper.getListing(siteConf, searchQuery, pageIndex);
 
-			if(siteConf.pageParam === false){
+			if (siteConf.pageParam === false) {
 				listingScraper.getListing(siteConf, searchQuery, 0)
 					.subscribe(
 						handleSuccess(req, res),
@@ -41,6 +40,5 @@
 						handleError(req, res)
 					);
 			}
-		})
-
-	}
+		});
+	};

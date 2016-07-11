@@ -47159,7 +47159,7 @@ _domRestify2.default.links('#jobs-listing');
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 
 var _dom = require('../util/dom');
@@ -47169,47 +47169,51 @@ var _dom2 = _interopRequireDefault(_dom);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var showJobs = function showJobs(result) {
-  var jobsListing = _dom2.default.select('ul#jobs-listing');
-  if (result.total > 0) {
+	var jobsListing = _dom2.default.select('ul#jobs-listing');
+	if (result.total > 0) {
+		jobsListing.opacity = 0;
+		_dom2.default.clear(jobsListing);
+		result.listing.forEach(function (jobData) {
+			var jobLi = _dom2.default.create('li.job-body');
+			jobsListing.appendChild(jobLi);
 
-    jobsListing.opacity = 0;
-    _dom2.default.clear(jobsListing);
+			var toggleInfo = _dom2.default.create('button.toggle-info: i.fa.fa-info');
+			toggleInfo.appendChild(_dom2.default.create('span More Info'));
 
-    result.listing.forEach(function (jobData) {
-      var jobLi = _dom2.default.create('li.job-body');
-      jobsListing.appendChild(jobLi);
+			if (jobData.info) jobLi.appendChild(toggleInfo);
 
-      var toggleInfo = _dom2.default.create('button.toggle-info: i.fa.fa-info');
-      toggleInfo.appendChild(_dom2.default.create('span More Info'));
+			var jobLink = _dom2.default.create('a.job-link(target=\'_blank\',href=\'' + jobData.link + '\').\n\t' + jobData.title);
 
-      if (jobData.info) jobLi.appendChild(toggleInfo);
+			jobLi.appendChild(jobLink);
 
-      var jobLink = _dom2.default.create('a.job-link(target=\'_blank\',href=\'' + jobData.link + '\').\n  ' + jobData.title);
+			if (jobData.salary && jobData.salary !== '') jobLi.appendChild(_dom2.default.create('div.job-salary salary: ' + jobData.salary));
 
-      jobLi.appendChild(jobLink);
+			if (jobData.info) {
+				(function () {
+					var jobInfo = _dom2.default.create('div.job-info');
+					jobInfo.textContent = jobData.info;
+					jobLi.appendChild(jobInfo);
+					var jobInfoHeight = jobInfo.offsetHeight;
+					jobInfo.style.height = 0;
 
-      if (jobData.salary && jobData.salary != '') jobLi.appendChild(_dom2.default.create('div.job-salary salary: ' + jobData.salary));
-
-      if (jobData.info) {
-        (function () {
-          var jobInfo = _dom2.default.create('div.job-info');
-          jobInfo.textContent = jobData.info;
-          jobLi.appendChild(jobInfo);
-          var jobInfoHeight = jobInfo.offsetHeight;
-          jobInfo.style.height = 0;
-
-          toggleInfo.addEventListener('click', function (ev) {
-            if (jobInfo.style.height == '0px') jobInfo.style.height = jobInfoHeight + 'px';else if (jobInfo.style.height == jobInfoHeight + 'px') jobInfo.style.height = 0;else return false;
-          });
-        })();
-      }
-    });
-    jobsListing.opacity = 1;
-  }
+					toggleInfo.addEventListener('click', function (ev) {
+						if (jobInfo.style.height === '0px') {
+							jobInfo.style.height = jobInfoHeight + 'px';
+						} else if (jobInfo.style.height === jobInfoHeight + 'px') {
+							jobInfo.style.height = 0;
+						} else {
+							return false;
+						}
+					});
+				})();
+			}
+		});
+		jobsListing.opacity = 1;
+	}
 };
 
 exports.default = {
-  showJobs: showJobs
+	showJobs: showJobs
 };
 
 },{"../util/dom":192}],191:[function(require,module,exports){
@@ -47230,7 +47234,7 @@ var _superagent2 = _interopRequireDefault(_superagent);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var functionFromStr = function functionFromStr(functionName) {
-	return window[functionName] && typeof window[functionName] == "function" ? window[functionName] : false;
+	return window[functionName] && typeof window[functionName] === "function" ? window[functionName] : false;
 };
 
 var links = function links(selector) {
@@ -47263,7 +47267,7 @@ var form = function form(selector) {
 		var url = _dom2.default.get(formEl, 'action');
 
 		_superagent2.default[method](url).query(data).set('Accept', 'application/json').end(function (err, res) {
-			return err ? console.log(['failure', err]) : success[0] && success[0] == 'callback' && success[1] ? functionFromStr(success[1])(res.body) : window.location.href = success;
+			return err ? console.log(['failure', err]) : success[0] && success[0] === 'callback' && success[1] ? functionFromStr(success[1])(res.body) : window.location.href = success;
 		});
 
 		ev.preventDefault();
@@ -47312,48 +47316,50 @@ var _pug2 = _interopRequireDefault(_pug);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var listToArray = function listToArray(data) {
-  return Array.prototype.slice.call(data);
+	return Array.prototype.slice.call(data);
 };
 
 var clear = function clear(parent) {
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
-  }
+	while (parent.firstChild) {
+		parent.removeChild(parent.firstChild);
+	}
 };
 
 var select = function select(selector) {
-  return (typeof selector === 'undefined' ? 'undefined' : _typeof(selector)) === 'object' ? selector instanceof HTMLElement ? selector : null : typeof selector === 'string' ? document.querySelector(selector) || null : null;
+	return (typeof selector === 'undefined' ? 'undefined' : _typeof(selector)) === 'object' ? selector instanceof HTMLElement ? selector : null : typeof selector === 'string' ? document.querySelector(selector) || null : null;
 };
 
 var create = function create(code, options) {
-  var tc = document.createElement('div');
-  tc.innerHTML = _pug2.default.render(code, options);
-  var el = tc.firstChild;
-  tc.removeChild(el);
-  return el;
+	var tc = document.createElement('div');
+	tc.innerHTML = _pug2.default.render(code, options);
+	var el = tc.firstChild;
+	tc.removeChild(el);
+	return el;
 };
 
 var on = function on(el, eventName, selector, cb) {
-  return el.addEventListener(eventName, function (ev) {
-    return typeof selector === 'string' && typeof cb !== 'undefined' ? listToArray(el.querySelectorAll(selector)).indexOf(ev.target) > -1 ? cb(ev) : false : (cb = selector) && cb(ev);
-  });
+	return el.addEventListener(eventName, function (ev) {
+		return typeof selector === 'string' && typeof cb !== 'undefined' ? listToArray(el.querySelectorAll(selector)).indexOf(ev.target) > -1 ? cb(ev) : false : function (cb) {
+			return cb(ev);
+		}(selector);
+	});
 };
 
 var get = function get(el, attr, defaultValue) {
-  return el.getAttribute(attr) || defaultValue;
+	return el.getAttribute(attr) || defaultValue;
 };
 var set = function set(el, attr, value) {
-  return el.setAttribute(attr, value);
+	return el.setAttribute(attr, value);
 };
 
 module.exports = {
-  listToArray: listToArray,
-  clear: clear,
-  select: select,
-  create: create,
-  on: on,
-  get: get,
-  set: set
+	listToArray: listToArray,
+	clear: clear,
+	select: select,
+	create: create,
+	on: on,
+	get: get,
+	set: set
 };
 
 },{"pug":135}]},{},[189]);

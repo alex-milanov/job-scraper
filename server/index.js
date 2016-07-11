@@ -1,27 +1,27 @@
-'use strict'
+'use strict';
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-var path = require('path');
+const express = require('express');
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
 
-var express = require('express');
-var bodyParser = require('body-parser');
-var methodOverride = require('method-override');
+const path = require('path');
 
-var app = express();
+const app = express();
 
-var appRoot = __dirname + '/..';
+const appRoot = path.resolve(__dirname, '..');
 
 // Request body parsing middleware should be above methodOverride
 app.use(bodyParser.urlencoded({
-  extended: true
+	extended: true
 }));
 app.use(bodyParser.json());
 app.use(methodOverride());
 
 app.use(express.static(appRoot + '/web/dist'));
 
-require(appRoot + '/api/routes/scrape')(app);
+require('./routes/scrape')(app);
 
 app.listen(8080);
 

@@ -5,7 +5,7 @@ const term = require('./term');
 const rx = require('./rx');
 
 module.exports = {
-  obj,
-  term,
-  rx
+	obj,
+	term,
+	rx
 };

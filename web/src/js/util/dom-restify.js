@@ -1,11 +1,11 @@
-'use strict'
+'use strict';
 
 import dom from './dom';
 
 import request from 'superagent';
 
 const functionFromStr = functionName =>
-	(window[functionName] && typeof window[functionName] == "function")
+	(window[functionName] && typeof window[functionName] === "function")
 		? window[functionName]
 		: false;
 
@@ -30,7 +30,7 @@ const links = selector => {
 
 const form = selector => {
 	const formEl = dom.select(selector);
-	dom.on(formEl, 'submit', (ev) => {
+	dom.on(formEl, 'submit', ev => {
 		const data = dom.listToArray(ev.target.elements)
 			.filter(el => dom.get(el, 'name') !== undefined)
 			.reduce((o, el) => (o[dom.get(el, 'name')] = el.value) && o, {});
@@ -44,7 +44,7 @@ const form = selector => {
 			.set('Accept', 'application/json')
 			.end((err, res) => (err)
 				? console.log(['failure', err])
-				: (success[0] && success[0]=='callback' && success[1])
+				: (success[0] && success[0] === 'callback' && success[1])
 					? functionFromStr(success[1])(res.body)
 					: (window.location.href = success)
 			);
