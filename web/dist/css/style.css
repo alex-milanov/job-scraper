@@ -2242,6 +2242,7 @@ header {
       height: 50px;
       line-height: 50px;
       float: left;
+      font-size: 18px;
       padding: 0px 10px; }
       header form > *:focus, header form > *:active, header form > *::-moz-focus-inner, header form > *:-moz-focusring, header form > *::-moz-focus-outer {
         border: 0;

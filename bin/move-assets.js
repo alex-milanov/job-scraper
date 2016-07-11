@@ -4,12 +4,12 @@ const fse = require('fs-extra');
 const path = require('path');
 
 const paths = {
-  'web/dist/fonts': 'node_modules/font-awesome/fonts'
+	'web/dist/fonts': 'node_modules/font-awesome/fonts'
 };
 
 Object.keys(paths).forEach(
-  p => fse.copySync(
-    path.resolve(__dirname, '..', paths[p]),
-    path.resolve(__dirname, '..', p)
-  )
+	p => fse.copySync(
+		path.resolve(__dirname, '..', paths[p]),
+		path.resolve(__dirname, '..', p)
+	)
 );

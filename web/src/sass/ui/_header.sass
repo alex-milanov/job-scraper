@@ -1,43 +1,44 @@
 header
-  +no-margin-padding
-  +header-height($jbsc-header-height)
-  width: 100%
-  box-shadow: 0px 0px 5px #333
-  > *
-    +no-margin-padding
-    +header-height($jbsc-header-height)
-    position: absolute
-    top: 0px
-    bottom: 0px
-  h1
-    left: 0px
-    width: 180px
-    font-size: 24px
-    text-align: center
-  form
-    left: 180px
-    right: 0px
-    > *
-      +clear-form-control
-      +header-height($jbsc-header-height)
-      float: left
-      padding: 0px 10px
-    input, select, button
-      cursor: pointer
-      &:hover
-        background: #eee
-    label
-      min-width: 20%
-    input, select
-      border-left: 1px dashed #333
-      &:focus
-        border-left: 1px dashed #333
-        background: #f5f5f5
-    input
-      min-width: 35%
-    select
-      min-width: 30%
-      padding: 0px
-    button
-      min-width: 15%
-      float: right
+	+no-margin-padding
+	+header-height($jbsc-header-height)
+	width: 100%
+	box-shadow: 0px 0px 5px #333
+	> *
+		+no-margin-padding
+		+header-height($jbsc-header-height)
+		position: absolute
+		top: 0px
+		bottom: 0px
+	h1
+		left: 0px
+		width: 180px
+		font-size: 24px
+		text-align: center
+	form
+		left: 180px
+		right: 0px
+		> *
+			+clear-form-control
+			+header-height($jbsc-header-height)
+			float: left
+			font-size: 18px
+			padding: 0px 10px
+		input, select, button
+			cursor: pointer
+			&:hover
+				background: #eee
+		label
+			min-width: 20%
+		input, select
+			border-left: 1px dashed #333
+			&:focus
+				border-left: 1px dashed #333
+				background: #f5f5f5
+		input
+			min-width: 35%
+		select
+			min-width: 30%
+			padding: 0px
+		button
+			min-width: 15%
+			float: right
