@@ -8,22 +8,13 @@ const clear = parent => {
   while (parent.firstChild) parent.removeChild(parent.firstChild)
 };
 
-const htmlTags = [
-		"div","span","p","ul","li","a","img",
-		"table","tbody","tr","td","thead","th","tfoot",
-		"form","input","select","button","textarea","label",
-		"header","section","canvas"
-	];
-
 const select = selector =>
   (typeof selector === 'object')
     ? (selector instanceof HTMLElement)
       ? selector
       : null
     : (typeof selector === 'string')
-      ? (htmlTags.indexOf(selector) > -1)
-        ? document.createElement(selector)
-        : document.querySelector(selector) || null
+      ? document.querySelector(selector) || null
       : null;
 
 const create = (code, options) => {

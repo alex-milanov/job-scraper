@@ -47321,10 +47321,8 @@ var clear = function clear(parent) {
   }
 };
 
-var htmlTags = ["div", "span", "p", "ul", "li", "a", "img", "table", "tbody", "tr", "td", "thead", "th", "tfoot", "form", "input", "select", "button", "textarea", "label", "header", "section", "canvas"];
-
 var select = function select(selector) {
-  return (typeof selector === 'undefined' ? 'undefined' : _typeof(selector)) === 'object' ? selector instanceof HTMLElement ? selector : null : typeof selector === 'string' ? htmlTags.indexOf(selector) > -1 ? document.createElement(selector) : document.querySelector(selector) || null : null;
+  return (typeof selector === 'undefined' ? 'undefined' : _typeof(selector)) === 'object' ? selector instanceof HTMLElement ? selector : null : typeof selector === 'string' ? document.querySelector(selector) || null : null;
 };
 
 var create = function create(code, options) {

@@ -69,8 +69,12 @@ const getJobInfo = (conf, jobsList) =>
 				linkPath: m[4]
 			}))
 			.map(u => `${u.protocol}://${u.baseUrl}/${u.linkPath}`)
-			.flatMap(url => getRequest(url))
-			.flatMap(data => getJobFields(conf.fields, job, data))
+			.flatMap(url =>
+				getRequest(url)
+					.flatMap(data =>
+						getJobFields(conf.fields, Object.assign({}, job, {link: url}), data)
+					)
+			)
 		)
 	).reduce((list, job) => [].concat(list, [job]), []);
 

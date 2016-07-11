@@ -1,41 +1,9 @@
 @import 'font-awesome'
 @import url(http://fonts.googleapis.com/css?family=Play:400,700&subset=latin,cyrillic-ext,cyrillic)
 
-@mixin no-margin-padding
-  margin: 0px
-  padding: 0px
+@import 'inc/vars'
+@import 'inc/mixins'
+@import 'inc/common'
 
-@mixin header-height($h)
-  display: inline-block
-  height: $h
-  line-height: $h
-
-body
-  font-family: 'Play'
-
-header
-  +no-margin-padding
-  +header-height(50px)
-  width: 100%
-  > *
-    +no-margin-padding
-    +header-height(50px)
-  h1
-    font-size: 20px
-    margin-right: 20px
-  form
-
-
-#jobs-listing
-  +no-margin-padding
-  li.job-body
-    +no-margin-padding
-    margin: 10px 0px
-    list-style-type: none
-    button
-      float: right
-    .job-info
-      margin-top: 10px
-      clear: both
-      overflow: hidden
-      transition: height 1s
+@import 'ui/header'
+@import 'ui/content'

@@ -11,7 +11,7 @@
     "build:pug": "pug --out web/dist --pretty web/src/pug/index.pug",
     "watch": "npm run watch:js & npm run watch:sass & npm run watch:pug & npm run livereload",
     "watch:js": "nodemon --watch 'web/src/js' --exec 'npm run build:js'",
-    "watch:sass": "npm run build:sass -- -w",
+    "watch:sass": "npm run build:sass -- --watch web/src/sass/**/*",
     "watch:pug": "npm run build:pug -- --watch",
     "livereload": "livereload web/dist",
     "start": "npm run build && nodemon api & npm run watch"
