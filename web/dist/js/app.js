@@ -47186,12 +47186,12 @@ var showJobs = function showJobs(result) {
 
 			jobLi.appendChild(jobLink);
 
-			if (jobData.salary && jobData.salary !== '') jobLi.appendChild(_dom2.default.create('div.job-salary salary: ' + jobData.salary));
+			if (jobData.salary && jobData.salary !== '') jobLi.appendChild(_dom2.default.create('div.job-salary.\n\tsalary: ' + jobData.salary));
 
 			if (jobData.info) {
 				(function () {
 					var jobInfo = _dom2.default.create('div.job-info');
-					jobInfo.textContent = jobData.info;
+					jobInfo.innerHTML = jobData.info;
 					jobLi.appendChild(jobInfo);
 					var jobInfoHeight = jobInfo.offsetHeight;
 					jobInfo.style.height = 0;

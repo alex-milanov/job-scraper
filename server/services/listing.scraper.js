@@ -3,6 +3,7 @@
 const request = require('request');
 // cheerio for jquery style html page parsing
 const cheerio = require('cheerio');
+const unfluff = require('unfluff');
 
 const Rx = require('rx');
 const $ = Rx.Observable;
@@ -21,7 +22,7 @@ const getRequest = url =>
 const fieldParse = (field, selector) =>
 	(typeof field.chain[0] === 'undefined')
 		? ''
-		: util.obj.chainMethodCall(selector(field.selector), [].concat(field.chain));
+		: util.obj.chainMethodCall(selector(field.selector), [].concat(field.chain)) || '';
 
 const getJobsListHTML = (conf, query, start) =>
 	(typeof query === 'undefined')
@@ -48,11 +49,17 @@ const getJobsList = (conf, jobsListHTML) =>
 
 const getJobFields = (fields, job, data) =>
 	$.just(cheerio.load(data))
-		.map(Selector =>
+		.map(selector =>
 			Object.keys(fields)
 				.filter(k => fields[k].type === 'jquery')
 				.reduce(
-					(job, k) => util.obj.assignKeyValue(job, k, fieldParse(fields[k], Selector)),
+					(job, k) => {
+						job[k] = fieldParse(fields[k], selector);
+						if (job[k] === '' && fields[k]['backup'] === 'unfluff') {
+							job[k] = unfluff(data).text;
+						}
+						return job;
+					},
 					job
 				)
 		);

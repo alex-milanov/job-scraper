@@ -23,12 +23,12 @@ const showJobs = result => {
 			jobLi.appendChild(jobLink);
 
 			if (jobData.salary && jobData.salary !== '') jobLi.appendChild(
-				dom.create(`div.job-salary salary: ${jobData.salary}`)
+				dom.create(`div.job-salary.\n	salary: ${jobData.salary}`)
 			);
 
 			if (jobData.info) {
 				const jobInfo = dom.create('div.job-info');
-				jobInfo.textContent = jobData.info;
+				jobInfo.innerHTML = jobData.info;
 				jobLi.appendChild(jobInfo);
 				const jobInfoHeight = jobInfo.offsetHeight;
 				jobInfo.style.height = 0;

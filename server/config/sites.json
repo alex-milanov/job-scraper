@@ -15,12 +15,12 @@
 		"fields": {
 			"info": {
 				"type": "jquery",
-				"selector": "td.jobTitleViewBold",
+				"selector": "td.jobTitleViewBold:contains('Описание')",
 				"chain": [
-					["eq",1],
 					["next","td"],
 					["text"]
-				]
+				],
+				"backup": "unfluff"
 			},
 			"salary": {
 				"type": "jquery",
@@ -71,7 +71,7 @@
 				"type": "jquery",
 				"selector": "section.job > .listing-container",
 				"chain": [
-					["text"]
+					["html"]
 				]
 			}
 		}
