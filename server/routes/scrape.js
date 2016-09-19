@@ -4,10 +4,12 @@
 	var util = require('../util');
 	var sitesConf = require('../config/sites.json');
 
-	const handleSuccess = (req, res) => listing =>
+	const handleSuccess = (req, res) => data =>
 		res.jsonp({
-			total: listing.length,
-			listing: listing
+			meta: {
+				total: data.length
+			},
+			data
 		});
 
 	const handleError = (req, res) => error =>

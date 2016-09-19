@@ -5,23 +5,8 @@
     <title>Job Scraper</title>
     <link rel="stylesheet" href="css/style.css">
   </head>
-  <body>
-    <header>
-      <h1>Job Scraper</h1>
-      <form class="restify" method="GET" action="/api/scrape" success="callback,showJobs">
-        <label>Enter Keywords:</label>
-        <input type="text" name="q">
-        <select class="form-control" name="site">
-          <option value="jobs.bg" selected="selected">Jobs.bg</option>
-          <option value="jobtiger.bg">JobTiger.bg</option>
-          <option value="weworkremotely.com">WeWorkRemotely.com</option>
-        </select>
-        <button type="submit"><i class="fa fa-search"></i>Search</button>
-      </form>
-    </header>
-    <section id="content">
-      <ul id="jobs-listing"></ul>
-    </section>
+  <body onLoad="actions.init()">
+    <section id="ui"></section>
     <script src="js/app.js"></script>
   </body>
 </html>

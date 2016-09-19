@@ -2202,70 +2202,75 @@ button {
     margin-right: 0.3em; }
 
 header {
+  position: relative;
   margin: 0px;
   padding: 0px;
   display: inline-block;
-  height: 50px;
-  line-height: 50px;
-  width: 100%;
-  box-shadow: 0px 0px 5px #333; }
+  height: 60px;
+  line-height: 60px;
+  width: 100%; }
   header > * {
     margin: 0px;
     padding: 0px;
-    display: inline-block;
-    height: 50px;
-    line-height: 50px;
-    position: absolute;
-    top: 0px;
-    bottom: 0px; }
+    position: absolute; }
   header h1 {
+    display: inline-block;
+    height: 60px;
+    line-height: 60px;
+    top: 0px;
+    bottom: 0px;
     left: 0px;
-    width: 180px;
+    width: 160px;
     font-size: 24px;
     text-align: center; }
+  header form.search {
+    top: 0px; }
+  header form.filter {
+    top: 30px; }
   header form {
-    left: 180px;
-    right: 0px; }
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    right: 140px;
+    left: 140px; }
     header form > * {
+      display: inline-block;
+      height: 30px;
+      line-height: 30px;
+      margin: 0px;
+      box-sizing: border-box; }
+    header form input, header form select {
       margin: 0px;
       padding: 0px;
-      border: 0px;
       outline: none;
-      border-radius: 0px;
       border-image: none;
       box-sizing: border-box;
       background: inherit;
       font-size: inherit;
       font-family: inherit;
       font-weight: inherit;
-      display: inline-block;
-      height: 50px;
-      line-height: 50px;
-      float: left;
-      font-size: 18px;
-      padding: 0px 10px; }
-      header form > *:focus, header form > *:active, header form > *::-moz-focus-inner, header form > *:-moz-focusring, header form > *::-moz-focus-outer {
-        border: 0;
+      border: 1px solid #ddd; }
+      header form input:focus, header form input:active, header form input::-moz-focus-inner, header form input:-moz-focusring, header form input::-moz-focus-outer, header form select:focus, header form select:active, header form select::-moz-focus-inner, header form select:-moz-focusring, header form select::-moz-focus-outer {
         outline: none; }
-    header form input, header form select, header form button {
-      cursor: pointer; }
-      header form input:hover, header form select:hover, header form button:hover {
-        background: #eee; }
+    header form input, header form label {
+      padding: 0px 10px; }
     header form label {
-      min-width: 20%; }
-    header form input, header form select {
-      border-left: 1px dashed #333; }
-      header form input:focus, header form select:focus {
-        border-left: 1px dashed #333;
-        background: #f5f5f5; }
-    header form input {
-      min-width: 35%; }
-    header form select {
-      min-width: 30%;
-      padding: 0px; }
-    header form button {
       min-width: 15%;
-      float: right; }
+      text-align: right; }
+    header form input[name=q], header form input[name=filter], header form select {
+      min-width: 40%; }
+    header form input[name=salary] {
+      min-width: 30px;
+      vertical-align: middle;
+      text-align: center; }
+  header button.btn-search {
+    display: inline-block;
+    height: 60px;
+    line-height: 60px;
+    padding: 0px;
+    right: 0px;
+    width: 120px;
+    font-size: 18px; }
 
 #content {
   padding: 10px; }
@@ -2283,4 +2288,12 @@ header {
         margin-top: 10px;
         clear: both;
         overflow: hidden;
-        transition: height 1s; }
+        transition: height 1.5s, opacity 1.5s;
+        height: 0px;
+        opacity: 0; }
+        #content #jobs-listing li.job-body .job-info.toggled {
+          opacity: 1;
+          height: auto; }
+
+#ui {
+  margin: 20px 100px; }
