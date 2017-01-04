@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(methodOverride());
 
-app.use(express.static(appRoot + '/web/dist'));
+app.use(express.static(appRoot + '/dist'));
 
 require('./routes/scrape')(app);
 

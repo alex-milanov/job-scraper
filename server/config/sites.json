@@ -2,8 +2,7 @@
 	"jobs.bg" : {
 		"baseUrl": "www.jobs.bg",
 		"protocol": "http",
-		"listingPath": "/front_job_search.php",
-		"queryParam": "keyword",
+		"listingPath": "/front_job_search.php?keyword=%query%",
 		"pageParam": "frompage",
 		"incStart": 0,
 		"incStep": 15,
@@ -35,8 +34,7 @@
 	"jobtiger.bg" : {
 		"baseUrl": "www.jobtiger.bg",
 		"protocol": "http",
-		"listingPath": "/obiavi-za-rabota/",
-		"queryParam": "keyword",
+		"listingPath": "/obiavi-za-rabota/?keyword=%query%",
 		"pageParam": "_page",
 		"incStart": 1,
 		"incStep": 1,
@@ -58,8 +56,7 @@
 	"weworkremotely.com" : {
 		"baseUrl": "weworkremotely.com",
 		"protocol": "https",
-		"listingPath": "/jobs/search",
-		"queryParam": "term",
+		"listingPath": "/jobs/search?term=%query%",
 		"pageParam": false,
 		"list": {
 			"selector": "section.jobs > article > ul > li > a:not(.view-all)",
@@ -70,6 +67,26 @@
 			"info": {
 				"type": "jquery",
 				"selector": "section.job > .listing-container",
+				"chain": [
+					["html"]
+				]
+			}
+		}
+	},
+	"remoteok.io": {
+		"baseUrl": "remoteok.io",
+		"protocol": "https",
+		"listingPath": "/remote-%query%-jobs",
+		"pageParam": false,
+		"list": {
+			"selector": "#jobsboard .job:not(.native-insert)",
+			"title": [["attr", "data-search"]],
+			"link": [["attr", "data-href"]]
+		},
+		"fields": {
+			"info": {
+				"type": "jquery",
+				"selector": "#jobsboard .description",
 				"chain": [
 					["html"]
 				]

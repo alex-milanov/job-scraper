@@ -4,7 +4,7 @@ const fse = require('fs-extra');
 const path = require('path');
 
 const paths = {
-	'web/dist/fonts': 'node_modules/font-awesome/fonts'
+	'dist/fonts': 'node_modules/font-awesome/fonts'
 };
 
 Object.keys(paths).forEach(

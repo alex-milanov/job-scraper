@@ -9,78 +9,69 @@ const Rx = require('rx');
 const $ = Rx.Observable;
 
 const util = require('../util');
+const obj = require('iblokz/common/obj');
 
 // denodified functions
 const getRequest = url =>
-	$.just(url)
-		.map(util.term.log('url'))
-		.flatMap(url =>
-			$.fromCallback(request)(url)
-				.map(r => r[1].body)
-		);
+	util.term.log('url')(url)
+	&& $.fromCallback(request)(url).map(r => r[1].body);
 
-const fieldParse = (field, selector) =>
-	(typeof field.chain[0] === 'undefined')
-		? ''
-		: util.obj.chainMethodCall(selector(field.selector), [].concat(field.chain)) || '';
+const fieldParse = (field, selector) => field.chain[0]
+	&& obj.chainCall(selector(field.selector), [].concat(field.chain))
+	|| '';
 
-const getJobsListHTML = (conf, query, start) =>
-	(typeof query === 'undefined')
-		? $.throw(new Error('no query sent'))
-		: getRequest(
-				`${conf.protocol}://${conf.baseUrl}` +
-				`${conf.listingPath}?${conf.queryParam}=${query}` +
-				((conf.pageParam && start)
-					? `&${conf.pageParam}=${start}`
-					: '')
-			);
+const getJobsListHTML = (conf, query, start) => query
+	&& getRequest(
+			`${conf.protocol}://${conf.baseUrl}` +
+			`${conf.listingPath}`.replace('%query%', query) +
+			((conf.pageParam && start)
+				? `&${conf.pageParam}=${start}`
+				: '')
+		)
+	|| $.throw(new Error('no query sent'));
 
 const getJobsList = (conf, jobsListHTML) =>
 	$.just(cheerio.load(jobsListHTML))
-		.map(selector =>
-			(conf.list)
-				? selector(conf.list.selector)
-					.map((i, el) => ({
-						title: util.obj.chainMethodCall(selector(el), [].concat(conf.list.title)),
-						link: util.obj.chainMethodCall(selector(el), [].concat(conf.list.link))
-					})).get()
-				: []
+		.map(selector => (conf.list)
+			? selector(conf.list.selector)
+				.map((i, el) => ({
+					title: obj.chainCall(selector(el), [].concat(conf.list.title)),
+					link: obj.chainCall(selector(el), [].concat(conf.list.link))
+				})).get()
+			: []
 		);
 
 const getJobFields = (fields, job, data) =>
 	$.just(cheerio.load(data))
-		.map(selector =>
-			Object.keys(fields)
-				.filter(k => fields[k].type === 'jquery')
-				.reduce(
-					(job, k) => {
-						job[k] = fieldParse(fields[k], selector);
-						if (job[k] === '' && fields[k]['backup'] === 'unfluff') {
-							job[k] = unfluff(data).text;
-						}
-						return job;
-					},
-					job
-				)
+		.map(selector => Object.keys(fields)
+			.filter(k => fields[k].type === 'jquery')
+			.reduce((job, k) => {
+				job[k] = fieldParse(fields[k], selector);
+				if (job[k] === '' && fields[k]['backup'] === 'unfluff') {
+					job[k] = unfluff(data).text;
+				}
+				return job;
+			}, job)
 		);
+
+const urlRegExp = /^((https?):\/\/([a-z\.]+))?\/?([a-z0-9\/\.\-_]+(\.html?)?)/gi;
 
 const getJobInfo = (conf, jobsList) =>
 	// case 1 - http(s)://site-base-url/job/link
 	// case 2 - http(s)://another-site/job/link
 	// case 3 - no http - /job/link or job/link
 	$.concat(jobsList.map(job =>
-		$.just(job.link.split(/^((https?):\/\/([a-z\.]+))?\/?([a-z0-9\/\.\-_]+(\.html?)?)/gi))
+		$.just(job.link.split(urlRegExp))
 			.map(m => ({
 				baseUrl: (typeof m[1] === "undefined") ? conf.baseUrl : m[3],
 				protocol: (typeof m[2] === "undefined") ? conf.protocol : m[2],
 				linkPath: m[4]
 			}))
 			.map(u => `${u.protocol}://${u.baseUrl}/${u.linkPath}`)
-			.flatMap(url =>
-				getRequest(url)
-					.flatMap(data =>
-						getJobFields(conf.fields, Object.assign({}, job, {link: url}), data)
-					)
+			.flatMap(url => getRequest(url)
+				.flatMap(data =>
+					getJobFields(conf.fields, Object.assign({}, job, {link: url}), data)
+				)
 			)
 		)
 	).reduce((list, job) => [].concat(list, [job]), []);

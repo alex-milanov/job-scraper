@@ -3,7 +3,7 @@
 const {
 	section, header, div, span, h1, i, ul, li, a,
 	form, label, input, button, select, option
-} = require('../util/vdom');
+} = require('iblokz/adapters/vdom');
 
 const formToData = form => Array.prototype.slice.call(form.elements)
 	// .map(el => (console.log(el.name), el))
@@ -22,6 +22,10 @@ const sites = [
 	{
 		name: 'WeWorkRemotely.com',
 		uri: 'weworkremotely.com'
+	},
+	{
+		name: 'RemoteOK.io',
+		uri: 'remoteok.io'
 	}
 ];
 
