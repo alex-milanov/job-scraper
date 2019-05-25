@@ -7,9 +7,21 @@ const unfluff = require('unfluff');
 
 const Rx = require('rx');
 const $ = Rx.Observable;
+const moment = require('moment');
+// require('moment/locale/bg');
 
 const util = require('../util');
 const obj = require('iblokz/common/obj');
+
+const parseDate = (dateStr, format) => {
+	let today = moment();
+	let baseDate = moment(dateStr, format);
+	return (((today.get('year') - baseDate.get('year')) > 2)
+		? (today.get('month') < 6 && baseDate.get('month') > 9)
+			? baseDate.set('year', today.get('year') - 1)
+			: baseDate.set('year', today.get('year'))
+		: baseDate).format();
+};
 
 // denodified functions
 const getRequest = url =>
@@ -36,7 +48,10 @@ const getJobsList = (conf, jobsListHTML) =>
 			? selector(conf.list.selector)
 				.map((i, el) => ({
 					title: obj.chainCall(selector(el), [].concat(conf.list.title)),
-					link: obj.chainCall(selector(el), [].concat(conf.list.link))
+					link: obj.chainCall(selector(el), [].concat(conf.list.link)),
+					date: conf.list.date
+						? obj.chainCall(selector(el), [].concat(conf.list.date))
+						: undefined
 				})).get()
 			: []
 		);
@@ -70,7 +85,11 @@ const getJobInfo = (conf, jobsList) =>
 			.map(u => `${u.protocol}://${u.baseUrl}/${u.linkPath}`)
 			.flatMap(url => getRequest(url)
 				.flatMap(data =>
-					getJobFields(conf.fields, Object.assign({}, job, {link: url}), data)
+					getJobFields(
+						conf.fields,
+						Object.assign({}, job, {link: url, baseUrl: conf.baseUrl}),
+						data
+					)
 				)
 			)
 		)
@@ -80,6 +99,11 @@ const getListing = (conf, query, start) =>
 	getJobsListHTML(conf, query, start)
 		.flatMap(data => getJobsList(conf, data))
 		.map(util.term.log('jobList'))
-		.flatMap(jobsList => getJobInfo(conf, jobsList));
+		.flatMap(jobsList => getJobInfo(conf, jobsList))
+		.map(list =>
+			list.map(item => item.date
+				? Object.assign({}, item, {date: parseDate(item.date, conf.dateFormat)})
+				: item)
+		);
 
 exports.getListing = getListing;

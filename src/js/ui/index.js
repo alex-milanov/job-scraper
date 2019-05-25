@@ -5,6 +5,9 @@ const {
 	form, label, input, button, select, option
 } = require('iblokz/adapters/vdom');
 
+const moment = require('moment');
+// require('moment/locale/bg');
+
 const formToData = form => Array.prototype.slice.call(form.elements)
 	// .map(el => (console.log(el.name), el))
 	.filter(el => el.name !== undefined)
@@ -35,7 +38,10 @@ module.exports = ({state, actions}) => section('#ui', [
 		form('.search', [
 			label('keywords:'),
 			input({props: {type: 'text', name: 'q'}}),
-			select({props: {name: 'site'}}, sites.map(site =>
+			select({
+				props: {name: 'site'},
+				on: {change: ev => actions.selectSite(ev.target.value)}
+			}, [{uri: null, name: 'All'}].concat(sites).map(site =>
 				option({
 					attrs: {
 						value: site.uri,
@@ -66,6 +72,10 @@ module.exports = ({state, actions}) => section('#ui', [
 	section('#content', [
 		ul('#jobs-listing',
 			state.jobs
+				.sort((a, b) => -(moment(a.date).toDate() - moment(b.date).toDate()))
+				.filter(job => state.site
+					? job.baseUrl.match(state.site)
+					: true)
 				.filter(job => state.filter
 					? job.title.match(state.filter) || job.info.match(state.filter)
 					: true)
@@ -78,7 +88,9 @@ module.exports = ({state, actions}) => section('#ui', [
 							{on: {click: () => actions.toggle(job.index)}},
 							[i('.fa.fa-info'), 'More Info']
 						),
-						a('.job-link', {props: {target: '_blank', href: job.link}}, job.title),
+						a('.job-link', {props: {target: '_blank', href: job.link}},
+							[moment(job.date).format('D MMM'), job.company, job.title].join(' ')
+						),
 						(job.salary) ? div('.job-salary', job.salary) : '',
 						div('.job-info', {
 							props: {innerHTML: job.info},

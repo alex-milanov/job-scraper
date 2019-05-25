@@ -13,6 +13,7 @@
 		"no-return-assign": ["error", "except-parens"],
 		"no-sequences": 0,
 		"dot-notation": 0,
-		"no-unused-vars": 0
+		"no-unused-vars": 0,
+		"new-cap": 0
 	}
 }

@@ -6,6 +6,7 @@
 		"pageParam": "frompage",
 		"incStart": 0,
 		"incStep": 15,
+		"dateFormat": "DD.MM.YYYY",
 		"list": {
 			"selector": "a.joblink",
 			"title": [["text"]],
@@ -26,6 +27,21 @@
 				"selector": "td.jobTitleViewBold:contains('Заплата')",
 				"chain": [
 					["next","td"],
+					["text"]
+				]
+			},
+			"date": {
+				"type": "jquery",
+				"selector": "td:contains('Дата:')",
+				"chain": [
+					["next","td"],
+					["text"]
+				]
+			},
+			"company": {
+				"type": "jquery",
+				"selector": ".company_link",
+				"chain": [
 					["text"]
 				]
 			}
@@ -61,7 +77,8 @@
 		"list": {
 			"selector": "section.jobs > article > ul > li > a:not(.view-all)",
 			"title": [["text"]],
-			"link": [["attr", "href"]]
+			"link": [["attr", "href"]],
+			"date": [["find",".date"],["text"]]
 		},
 		"fields": {
 			"info": {
@@ -69,6 +86,13 @@
 				"selector": "section.job > .listing-container",
 				"chain": [
 					["html"]
+				]
+			},
+			"company": {
+				"type": "jquery",
+				"selector": ".company",
+				"chain": [
+					["text"]
 				]
 			}
 		}

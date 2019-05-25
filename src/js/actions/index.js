@@ -5,13 +5,14 @@ const $ = Rx.Observable;
 const {Subject} = Rx;
 
 const request = require('iblokz/adapters/request');
+const obj = require('iblokz/common/obj');
 
 const initial = {
-	site: 'jobs.bg',
+	site: null,
 	jobs: []
 };
 
-const getJobs = query => request.get('/api/scrape')
+const getJobs = query => request.get('/api/jobs')
 	.query(query)
 	.set('Retry-After', 3600)
 	.set('Accept', 'application/json')
@@ -30,6 +31,8 @@ const toggle = index => state =>
 
 const filter = filter => state => Object.assign({}, state, {filter});
 
+const selectSite = site => state => Object.assign({}, state, {site});
+
 const toggleSalary = () => state =>
 	Object.assign({}, state, {salary: !state.salary});
 
@@ -38,5 +41,6 @@ module.exports = {
 	getJobs,
 	toggle,
 	filter,
+	selectSite,
 	toggleSalary
 };
